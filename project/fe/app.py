@@ -1,10 +1,21 @@
 # third part lib streamlit install 
+# pip install requests
+
+# requests is tyhird part py lib which is used to create apis and it is used to perform http requests with req methods
+
+# post()
+# get()
+# put()
+# delete()
+
 
 # pip install streamlit
 # streamlit ru/n command
 # streamlit run filename.py
 import streamlit as st
+import requests
 
+# requests.post(be_server_running_url,json=regustrered_data)
 
 t1, t2 = st.tabs(["🔑 Login", "📝 Register"])
 
@@ -34,22 +45,40 @@ with t2:
 
     with st.form("Reg form"):
 
-        st.text_input("👤 Name", placeholder="Enter name here")
+        n=st.text_input("👤 Name", placeholder="Enter name here")
 
-        st.text_input("📧 Email", placeholder="Enter email here")
+        e=st.text_input("📧 Email", placeholder="Enter email here")
 
-        st.text_input(
+        p=st.text_input(
             "🔒 Password",
             placeholder="Enter password here",
             type="password"
         )
 
-        st.text_input(
+        c_p=st.text_input(
             "🔐 Confirm Password",
             placeholder="Re-enter password here",
             type="password"
         )
 
-        st.selectbox("🎭 Role", ["", "trainer", "student"])
+        r=st.selectbox("🎭 Role", ["", "trainer", "student"])
 
-        st.form_submit_button("🚀 Register")
+        r_btn=st.form_submit_button("🚀 Register")
+
+        if r_btn:
+            new_user={
+                "name":n,
+                "email":e,
+                "password":p,
+                "c_password":c_p,
+                "role":r
+            }
+            res=requests.post("http://127.0.0.1:8000/register",json=new_user)
+
+            if res.status_code == 200:
+                st.write(res.json())
+            else:
+                st.write("some error occured")    
+
+
+

@@ -26,17 +26,47 @@ with t1:
 
     with st.form("Login Form"):
 
-        st.text_input("📧 Email", placeholder="Enter email here")
+        e=st.text_input("📧 Email", placeholder="Enter email here")
 
-        st.text_input(
+        p=st.text_input(
             "🔒 Password",
             placeholder="Enter password here",
             type="password"
         )
 
-        st.selectbox("🎭 Role", ["", "trainer", "student"])
+        r=st.selectbox("🎭 Role", ["", "trainer", "student"])
 
-        st.form_submit_button("🚀 Login")
+        l_btn=st.form_submit_button("🚀 Login")
+
+        if l_btn:
+            login_cred_details={
+                "email":e,
+                "password":p,
+                "role":r
+            }
+
+            res_from_sup_for_login=requests.post("http://127.0.0.1:8000/login",json=login_cred_details)
+
+            # st.write(res_from_sup_for_login)
+            if res_from_sup_for_login.status_code == 200:
+                st.write(res_from_sup_for_login.json())
+                r_data=res_from_sup_for_login.json()
+                st.session_state["status"] =True
+                st.session_state["name"]=r_data["loggedIn_user"]["name"]
+                st.session_state["role"]=r_data["loggedIn_user"]["role"]
+                st.session_state["email"]=r_data["loggedIn_user"]["email"]
+
+                if st.session_state["status"] :
+                    if st.session_state["role"] =="trainer":
+                        st.switch_page("pages/TrainerDashboard.py")
+
+                    if st.session_state["role"] == "student":
+                        st.switch_page("pages/StudentDashboard.py")
+                        
+                    
+                    
+            else:
+                st.write("some error occured")    
 
 
 with t2:

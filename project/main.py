@@ -15,6 +15,27 @@ fastapi_obj=FastAPI() # creating fastapi object
 supabase_obj=create_client(SUPABASE_URL,SUPABASE_KEY)
 
 
+@fastapi_obj.get("/get_my_courses")
+def get_my_courses_fun(t_id:str):
+    res=supabase_obj.table("courses").select("*").eq("trainer_id",t_id).execute()
+    return {
+
+"msg":"got yr courses records",
+"data":res.data
+    }
+    # select *
+# from courses 
+# where trainer_id = "a53738a9-3e62-4e8d-bcd4-911415f8530d"
+
+
+@fastapi_obj.post("/add_course")
+def add_course_fun(new_course:dict):
+    res_from_sup=supabase_obj.table("courses").insert(new_course).execute()
+    print(res_from_sup)
+    return {
+        "msg":"successfully added a new course"
+    }
+
 
 @fastapi_obj.post("/login")
 def login_validation(login_cred_details:dict):
@@ -25,7 +46,7 @@ def login_validation(login_cred_details:dict):
     incoming_login_role=login_cred_details["role"]
 
     response = supabase_obj.table("users") \
-    .select("name,email,role") \
+    .select("id,name,email,role") \
     .eq("email", incoming_login_email) \
     .eq("password", incoming_login_password) \
     .eq("role", incoming_login_role) \
@@ -43,8 +64,6 @@ def login_validation(login_cred_details:dict):
         "status":True,
         "loggedIn_user":response.data[0]
     }
-
-
 
 @fastapi_obj.post("/register")
 def user_registration(new_user:dict): # type annotation

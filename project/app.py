@@ -55,6 +55,7 @@ with t1:
                 st.session_state["name"]=r_data["loggedIn_user"]["name"]
                 st.session_state["role"]=r_data["loggedIn_user"]["role"]
                 st.session_state["email"]=r_data["loggedIn_user"]["email"]
+                st.session_state["id"]=r_data["loggedIn_user"]["id"]
 
                 if st.session_state["status"] :
                     if st.session_state["role"] =="trainer":
